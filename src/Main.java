@@ -1,8 +1,9 @@
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         int option;
 
         System.out.println("-------------------------");
@@ -18,7 +19,7 @@ public class Main {
 
         switch (option) {
             case 0 -> System.out.println("Adeu!");
-            case 1 -> act1.Main.main(args);
+            case 2 -> act2.Main.main(args);
 
             default -> System.out.println("Opció no vàlida");
         }
