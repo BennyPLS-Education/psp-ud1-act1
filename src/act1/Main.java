@@ -16,7 +16,7 @@ public class Main {
         int number = getNumber();
 
         try {
-            System.out.println(is_even(number));
+            System.out.println(is_even(number)? "Parell" : "Senar");
         } catch (NumberFormatException e) {
             System.out.println("Introdueix un número vàlid");
         } catch (ArrayIndexOutOfBoundsException e) {
