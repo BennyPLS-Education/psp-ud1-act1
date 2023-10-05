@@ -1,5 +1,6 @@
 ### IntelliJ IDEA ###
 out/
+*.jar
 !**/src/main/**/out/
 !**/src/test/**/out/
 
@@ -27,4 +28,3 @@ bin/
 
 ### Mac OS ###
 .DS_Store
-/act1.jar
