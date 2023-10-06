@@ -2,10 +2,11 @@ package act2;
 
 import java.io.*;
 import java.util.InputMismatchException;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * <h1>Activitat 1</h1>
+ * <h1>Activitat 2</h1>
  * <p>
  * Escriu un programa anomenat “ExercicisMultiproces1”. Creará un procés
  * fill per executar el programa “ParellSenar” anterior. Aquest procés pare
@@ -35,22 +36,23 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println("Resultado: es par -  " + line.split(": ")[1]);
+                System.out.println(line);
             }
         }
     }
 
     public static int getNumber() {
         var input = new Scanner(System.in);
+        Integer a = null;
 
-        while (true) {
-            try {
-                System.out.print("Introdueix un número: ");
-                return input.nextInt();
-            } catch (InputMismatchException e) {
-                input.next();
-                System.out.println("Introdueix un número vàlid");
-            }
+        try {
+            System.out.print("Introdueix un número: ");
+            a = input.nextInt();
+        } catch (InputMismatchException e) {
+            input.next();
+            System.out.println("Introdueix un número vàlid");
         }
+
+        return Objects.requireNonNullElseGet(a, Main::getNumber);
     }
 }
