@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="act4.child:jar">
+    <output-path>$PROJECT_DIR$/</output-path>
+    <root id="archive" name="act4.child.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META/META-INF-ACT-4/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="act1" />
+    </root>
+  </artifact>
+</component>

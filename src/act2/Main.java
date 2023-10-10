@@ -1,58 +1,49 @@
 package act2;
 
-import java.io.*;
-import java.util.InputMismatchException;
-import java.util.Objects;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
- * <h1>Activitat 2</h1>
+ * <h1>Activitat 2
  * <p>
- * Escriu un programa anomenat “ExercicisMultiproces1”. Creará un procés
- * fill per executar el programa “ParellSenar” anterior. Aquest procés pare
- * mostrarà per pantalla “Introdueix un nombre:” i l’usuari por introduir:
+ * Escriu un programa que faci el següent:
+ * a. Crear un procés fill (ExercicisMultiproces2_ModificarString )
  * <p>
- * - Un nombre enter positiu.
- * En aquest cas, es creará un procés fill (cridant a
- * ParellSenar) i es mostrarà el resultat de l’execució.
- * - “exit” per acabar l’execució del programa.
+ * b. El procés pare (ExercicisMultiproces2 ) i el procés fill es comunicarà de
+ * manera bidireccional utilitzant streams.
+ * <p>
+ * c. El procés pare llegirà línies de la seva entrada estàndard i les enviarà a
+ * l'entrada estàndard del fill (utilitzant l'OutputStream del fill).
+ * <p>
+ * d. El procés fill llegirà el text per la seva entrada estàndard, el transformarà
+ * tot a lletres majúscules i substituirà totes les vocals per el símbol guió
+ * baix “_”.
+ * <p>
+ * e. El pare imprimirà en pantalla el que rep del fill a través de l'InputStream
+ * del mateix.
+ * <p>
+ * f. Quan el pare parla la sortida per pantalla ha de començar amb: “El
+ * PARE diu:” i quan el fill parla, ha de començar per: “El Fill diu:”
  */
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        int number = getNumber();
+        var process = new ProcessBuilder("java", "-jar", "act3.child.jar").start();
+        String inputLine;
 
-        ProcessBuilder pb = new ProcessBuilder("java", "-jar", "act1.jar");
-        Process process = pb.start();
+        try (var scanner = new Scanner(System.in)) {
+            inputLine = scanner.nextLine();
+        }
 
-        try (var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
-            writer.write(String.valueOf(number));
-            writer.newLine();
+        try (var writer = process.getOutputStream()) {
+            writer.write(inputLine.getBytes());
             writer.flush();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) { }
 
         process.waitFor();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-        }
-    }
+        System.out.print("El Pare diu: ");
+        process.getInputStream().transferTo(System.out);
 
-    public static int getNumber() {
-        var input = new Scanner(System.in);
-        Integer a = null;
-
-        try {
-            System.out.print("Introdueix un número: ");
-            a = input.nextInt();
-        } catch (InputMismatchException e) {
-            input.next();
-            System.out.println("Introdueix un número vàlid");
-        }
-
-        return Objects.requireNonNullElseGet(a, Main::getNumber);
     }
 }

@@ -1,55 +1,61 @@
 package act1;
 
+import java.io.*;
 import java.util.InputMismatchException;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * <h1>Activitat 1</h1>
+ * <h1>Activitat 2</h1>
  * <p>
  * Escriu un programa anomenat “ExercicisMultiproces1_ParellSenar”.
  * Aquest rebrà un nombre enter positiu i haurà de mostrar el resultat
  * “Parell” o “Senar”.
+ * b. Escriu un programa anomenat “ExercicisMultiproces1”. Creará un procés
+ * fill per executar el programa “ParellSenar” anterior. Aquest procés pare
+ * mostrarà per pantalla “Introdueix un nombre:” i l’usuari por introduir:
+ * <p>
+ * - Un nombre enter positiu.
+ * En aquest cas, es creará un procés fill (cridant a
+ * ParellSenar) i es mostrarà el resultat de l’execució.
+ * - “exit” per acabar l’execució del programa.
  */
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         int number = getNumber();
 
-        try {
-            System.out.println(is_even(number)? "Parell" : "Senar");
-        } catch (NumberFormatException e) {
-            System.out.println("Introdueix un número vàlid");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Introdueix un número com a argument");
-        }
-    }
+        ProcessBuilder pb = new ProcessBuilder("java", "-jar", "act1.child.jar");
+        Process process = pb.start();
 
-    /**
-     * Get a number from the command line arguments.
-     *
-     * @return the number
-     */
-    static int getNumber() {
-        var scan = new Scanner(System.in);
+        try (var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
+            writer.write(String.valueOf(number));
+            writer.newLine();
+            writer.flush();
+        } catch (IOException ignored) {}
 
-        while (true) {
-            try {
-                System.out.print("Introdueix un número: ");
-                return scan.nextInt();
-            } catch (InputMismatchException e) {
-                scan.next();
-                System.out.println("Introdueix un número vàlid");
+        process.waitFor();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
             }
         }
     }
 
-    /**
-     * Check whether a given number is even or not.
-     *
-     * @param number the number to be checked
-     * @return true if the number is even, false otherwise
-     */
-    static boolean is_even(int number) {
-        return number % 2 == 0;
+    public static int getNumber() {
+        var input = new Scanner(System.in);
+        Integer a = null;
+
+        try {
+            System.out.print("Introdueix un número: ");
+            a = input.nextInt();
+        } catch (InputMismatchException e) {
+            input.next();
+            System.out.println("Introdueix un número vàlid");
+        }
+
+        return Objects.requireNonNullElseGet(a, Main::getNumber);
     }
 }

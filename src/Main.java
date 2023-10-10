@@ -19,7 +19,9 @@ public class Main {
 
         switch (option) {
             case 0 -> System.out.println("Adeu!");
+            case 1 -> act1.Main.main(args);
             case 2 -> act2.Main.main(args);
+            case 3 -> act3.Main.main(args);
 
             default -> System.out.println("Opció no vàlida");
         }
