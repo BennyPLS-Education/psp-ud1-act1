@@ -18,15 +18,24 @@ public class Main {
     private final static String RECEIVED_NOTIFICATION = "rep missatge del fill ";
     private final static String SEND_NOTIFICATION = "envia missatge";
 
-    public static void main(String[] args) throws IOException {
-        var process = new ProcessBuilder("java", "-jar", "act4.child.jar").start();
+    public static void main(String[] args) {
+        Process process = null;
+        try {
+            process = new ProcessBuilder("java", "-jar", "act4.child.jar").start();
+        } catch (IOException e) {
+            System.out.println("No s'ha pogut crear el procés fill");
+            System.exit(1);
+        }
 
         System.out.println(PREFIX + SEND_NOTIFICATION);
 
         try (var writer = process.getOutputStream()) {
             writer.write(SALUTATION.getBytes());
             writer.flush();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+            System.out.println("No s'ha pogut enviar el missatge al procés fill");
+            System.exit(1);
+        }
 
         try (var reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 
@@ -37,6 +46,9 @@ public class Main {
 
             System.out.println(PREFIX + RECEIVED_NOTIFICATION + '"' + reader.readLine() + '"');
 
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            System.out.println("No s'ha pogut llegir el missatge del procés fill");
+            System.exit(1);
+        }
     }
 }
