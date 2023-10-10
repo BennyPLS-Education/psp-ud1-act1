@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * <h1>Activitat 2</h1>
+ * <h1>Activitat 1</h1>
  * <p>
  * Escriu un programa anomenat “ExercicisMultiproces1_ParellSenar”.
  * Aquest rebrà un nombre enter positiu i haurà de mostrar el resultat
@@ -23,10 +23,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        int number = getNumber();
+        var process = new ProcessBuilder("java", "-jar", "act1.child.jar").start();
 
-        ProcessBuilder pb = new ProcessBuilder("java", "-jar", "act1.child.jar");
-        Process process = pb.start();
+        int number = getNumber();
 
         try (var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
             writer.write(String.valueOf(number));
@@ -36,14 +35,15 @@ public class Main {
 
         process.waitFor();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-        }
+        process.getInputStream().transferTo(System.out);
     }
 
+
+    /**
+     * Prompts the user to enter a number and keeps prompting until a valid number is entered.
+     *
+     * @return The valid number entered by the user.
+     */
     public static int getNumber() {
         var input = new Scanner(System.in);
         Integer a = null;
