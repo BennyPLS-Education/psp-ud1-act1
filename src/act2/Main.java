@@ -46,12 +46,14 @@ public class Main {
             writer.flush();
         } catch (IOException ignored) {
             System.out.println("No s'ha pogut enviar el missatge al procés fill");
+            System.exit(1);
         }
 
         try {
             process.waitFor();
         } catch (InterruptedException e) {
             System.out.println("El procés fill ha estat interromput");
+            System.exit(1);
         }
 
         try {
@@ -59,6 +61,7 @@ public class Main {
             process.getInputStream().transferTo(System.out);
         } catch (IOException e) {
             System.out.println("No s'ha pogut llegir el missatge del procés fill");
+            System.exit(1);
         }
 
     }

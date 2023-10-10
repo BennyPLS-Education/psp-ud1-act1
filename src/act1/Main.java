@@ -22,8 +22,14 @@ import java.util.Scanner;
  */
 
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        var process = new ProcessBuilder("java", "-jar", "act1.child.jar").start();
+    public static void main(String[] args) {
+        Process process = null;
+        try {
+            process = new ProcessBuilder("java", "-jar", "act1.child.jar").start();
+        } catch (IOException e) {
+            System.out.println("No s'ha pogut crear el procés fill");
+            System.exit(1);
+        }
 
         int number = getNumber();
 
@@ -31,11 +37,24 @@ public class Main {
             writer.write(String.valueOf(number));
             writer.newLine();
             writer.flush();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+            System.out.println("No s'ha pogut enviar el missatge al procés fill");
+            System.exit(1);
+        }
 
-        process.waitFor();
+        try {
+            process.waitFor();
+        } catch (InterruptedException e) {
+            System.out.println("El procés fill ha estat interromput");
+            System.exit(1);
+        }
 
-        process.getInputStream().transferTo(System.out);
+        try {
+            process.getInputStream().transferTo(System.out);
+        } catch (IOException e) {
+            System.out.println("No s'ha pogut llegir el missatge del procés fill");
+            System.exit(1);
+        }
     }
 
 
