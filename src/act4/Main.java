@@ -1,5 +1,7 @@
 package act4;
 
+import java.io.IOException;
+
 /**
  * <h1>Activitat 3
  * <p>
@@ -17,4 +19,9 @@ package act4;
  */
 
 public class Main {
+    public static void main(String[] args) throws IOException {
+        var process = new ProcessBuilder("java", "-jar", "act4.child.jar").start();
+
+        process.getInputStream().transferTo(System.out);
+    }
 }

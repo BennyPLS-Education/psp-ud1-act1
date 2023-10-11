@@ -30,7 +30,7 @@ public class Main {
     public static void main(String[] args) {
         Process process = null;
         try {
-            process = new ProcessBuilder("java", "-jar", "act3.child.jar").start();
+            process = new ProcessBuilder("java", "-jar", "act2.child.jar").start();
         } catch (IOException e) {
             System.out.println("No s'ha pogut crear el procés fill");
             System.exit(1);
