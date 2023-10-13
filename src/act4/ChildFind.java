@@ -19,16 +19,7 @@ class ChildFind {
 
         Process command = getProcess(text, path);
 
-        try {
-            command.waitFor();
-        } catch (InterruptedException e) {
-            System.out.println("El procés fill ha estat interromput");
-        }
-
-        if (command.exitValue() != 0) {
-            System.out.println("El procés fill ha acabat amb un error");
-            System.exit(1);
-        }
+        wait(command);
 
         try {
             command.getInputStream().transferTo(System.out);
@@ -105,5 +96,19 @@ class ChildFind {
         }
 
         return pb;
+    }
+
+    /**
+     * Waits for the given process to complete execution.
+     *
+     * @param command the process to wait for
+     */
+    private static void wait(Process command) {
+        try {
+            command.waitFor();
+        } catch (InterruptedException e) {
+            System.out.println("El procés fill ha estat interromput");
+            System.exit(1);
+        }
     }
 }

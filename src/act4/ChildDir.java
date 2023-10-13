@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 /**
  * The ChildDir class is a utility that executes the ls/dir command on the user home.
@@ -14,8 +15,35 @@ import java.io.InputStreamReader;
  */
 public class ChildDir {
     public static void main(String[] args) {
+        String path = getText();
         Process command = getProcess();
 
+        wait(command);
+
+        String[] lines = getProcessOutput(command);
+
+        writeFile(lines, path);
+
+        System.out.println("Fitxer creat");
+    }
+
+    /**
+     * Reads a line of text from the standard input using the Scanner class.
+     *
+     * @return the line of text read from the standard input
+     */
+    private static String getText() {
+        try (var scanner = new Scanner(System.in)) {
+            return scanner.nextLine();
+        }
+    }
+
+    /**
+     * Waits for the given process to complete execution.
+     *
+     * @param command the process to wait for
+     */
+    private static void wait(Process command) {
         try {
             command.waitFor();
         } catch (InterruptedException e) {
@@ -27,12 +55,6 @@ public class ChildDir {
             System.out.println("El procés fill ha acabat amb un error");
             System.exit(1);
         }
-
-        final String[] lines = getProcessOutput(command);
-
-        writeFile(lines);
-
-        System.out.println("Fitxer creat");
     }
 
     /**
@@ -40,8 +62,8 @@ public class ChildDir {
      *
      * @param lines the array of lines to write to the file
      */
-    private static void writeFile(String[] lines) {
-        try (var writer = new FileWriter("output.txt")) {
+    private static void writeFile(String[] lines, String path) {
+        try (var writer = new FileWriter(path)) {
             for (String line : lines) {
                 writer.write(line + "\n");
             }
