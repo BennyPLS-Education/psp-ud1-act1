@@ -19,6 +19,21 @@ public class Main {
     private final static String SEND_NOTIFICATION = "envia missatge";
 
     public static void main(String[] args) {
+        Process process = getProcess();
+
+        System.out.println(PREFIX + SEND_NOTIFICATION);
+
+        writeTo(process);
+
+        readFrom(process);
+    }
+
+    /**
+     * Retrieves the process of a child program.
+     *
+     * @return the process of the child program
+     */
+    private static Process getProcess() {
         Process process = null;
         try {
             process = new ProcessBuilder("java", "-jar", "act3.child.jar").start();
@@ -26,17 +41,20 @@ public class Main {
             System.out.println("No s'ha pogut crear el procés fill");
             System.exit(1);
         }
+        return process;
+    }
 
-        System.out.println(PREFIX + SEND_NOTIFICATION);
-
-        try (var writer = process.getOutputStream()) {
-            writer.write(SALUTATION.getBytes());
-            writer.flush();
-        } catch (IOException ignored) {
-            System.out.println("No s'ha pogut enviar el missatge al procés fill");
-            System.exit(1);
-        }
-
+    /**
+     * Reads the output from the given Process and prints it to the console.
+     * This method reads the input stream of the Process and prints the lines
+     * to the console using the format specified by the constants CHILD_PREFIX
+     * and PREFIX.
+     * <p>
+     * It waits for the process to complete and then prints the last line.
+     *
+     * @param process the Process object from which to read the output
+     */
+    private static void readFrom(Process process) {
         try (var reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 
             System.out.println(CHILD_PREFIX + reader.readLine());
@@ -48,6 +66,23 @@ public class Main {
 
         } catch (Exception ignored) {
             System.out.println("No s'ha pogut llegir el missatge del procés fill");
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Writes a message to the input stream of the given Process.
+     * This method writes the message specified by the constant SALUTATION
+     * to the input stream of the Process.
+     *
+     * @param process the Process object to which the message should be written
+     */
+    private static void writeTo(Process process) {
+        try (var writer = process.getOutputStream()) {
+            writer.write(SALUTATION.getBytes());
+            writer.flush();
+        } catch (IOException ignored) {
+            System.out.println("No s'ha pogut enviar el missatge al procés fill");
             System.exit(1);
         }
     }

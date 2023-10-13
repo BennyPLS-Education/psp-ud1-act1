@@ -23,16 +23,35 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Process process = null;
-        try {
-            process = new ProcessBuilder("java", "-jar", "act1.child.jar").start();
-        } catch (IOException e) {
-            System.out.println("No s'ha pogut crear el procés fill");
-            System.exit(1);
-        }
-
+        final Process process = getProcess();
         int number = getNumber();
 
+        writeTo(process, number);
+        wait(process);
+        readFrom(process);
+    }
+
+    /**
+     * Reads output from a Process and writes it to the standard output.
+     *
+     * @param process The Process object from which to read the output.
+     */
+    private static void readFrom(Process process) {
+        try {
+            process.getInputStream().transferTo(System.out);
+        } catch (IOException e) {
+            System.out.println("No s'ha pogut llegir el missatge del procés fill");
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Writes a number to the output stream of a process.
+     *
+     * @param process the process whose output stream should be written to
+     * @param number  the number to be written to the output stream
+     */
+    private static void writeTo(Process process, int number) {
         try (var writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
             writer.write(String.valueOf(number));
             writer.newLine();
@@ -41,20 +60,36 @@ public class Main {
             System.out.println("No s'ha pogut enviar el missatge al procés fill");
             System.exit(1);
         }
+    }
 
+    /**
+     * Waits for the given process to finish executing.
+     *
+     * @param process the process to wait for
+     */
+    private static void wait(Process process) {
         try {
             process.waitFor();
         } catch (InterruptedException e) {
             System.out.println("El procés fill ha estat interromput");
             System.exit(1);
         }
+    }
 
+    /**
+     * Retrieves the Process object for creating a child process.
+     *
+     * @return The Process object for the child process.
+     */
+    private static Process getProcess() {
+        Process process = null;
         try {
-            process.getInputStream().transferTo(System.out);
+            process = new ProcessBuilder("java", "-jar", "act1.child.jar").start();
         } catch (IOException e) {
-            System.out.println("No s'ha pogut llegir el missatge del procés fill");
+            System.out.println("No s'ha pogut crear el procés fill");
             System.exit(1);
         }
+        return process;
     }
 
 

@@ -4,6 +4,11 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Child {
+    /**
+     * The main method for the application.
+     * <p>
+     * This method prompts the user for input, receives the input, and prints whether the input number is even or odd.
+     */
     public static void main(String[] args) {
         int number = getNumber();
 
